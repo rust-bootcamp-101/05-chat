@@ -16,6 +16,6 @@ pub fn get_router() -> Router {
         .route("/events", get(sse_handler))
 }
 
-pub(crate) async fn index_handler() -> impl IntoResponse {
+async fn index_handler() -> impl IntoResponse {
     Html(INDEX_HTML)
 }

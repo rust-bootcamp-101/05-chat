@@ -15,3 +15,10 @@ thiserror = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+chrono = { workspace = true }
+argon2 = { workspace = true }
+rstest = "0.20.0"
+
+[dev-dependencies]
+# sqlx-db-tester = { workspace = true } workspace 不支持 dev-dependencies，所以只能单独引入到crate中
+sqlx-db-tester = "0.4.2"

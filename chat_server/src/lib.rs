@@ -1,7 +1,11 @@
 mod config;
+mod error;
 mod handlers;
+mod models;
 
 pub use config::AppConfig;
+pub use error::AppError;
+pub use models::User;
 
 use handlers::*;
 
