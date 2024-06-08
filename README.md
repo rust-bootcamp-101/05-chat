@@ -6,7 +6,7 @@ cargo deny --log-level error
 
 ### Cargo deny 检测到错误，如何处理
 如下错误，提示某个库可能会遭受到攻击，不能使用该库(jwt-simple引用到了rsa这个库)
-则需要考虑不要使用这个库，或如果你仍要使用这个库，我们没有使用到这个rsa，则可以把 ID: RUSTSEC-2023-0071 加入到deny的过滤中
+则需要考虑不要使用这个库，或如果你仍要使用这个库，确认没有使用到这个rsa，则可以把 ID: RUSTSEC-2023-0071 加入到deny的过滤中
 ```
 error[vulnerability]: Marvin Attack: potential key recovery through timing sidechannels
     ┌─ /Users/yourname/code/rust/chat/Cargo.lock:165:1
