@@ -17,8 +17,12 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 chrono = { workspace = true }
 argon2 = { workspace = true }
-rstest = "0.20.0"
+# jwt-simple 设计比jwtwebtoken更好(不易出错) 把default-features去掉, 因为默认里面boring是Cpp写的, 编译很慢
+jwt-simple = { version = "0.12.9", default-features = false, features = ["pure-rust"] }
+serde_json = "1.0.117"
 
 [dev-dependencies]
+http-body-util = "0.1.1"
+hyper = { version = "1.3.1", features = ["full"] }
 # sqlx-db-tester = { workspace = true } workspace 不支持 dev-dependencies，所以只能单独引入到crate中
 sqlx-db-tester = "0.4.2"
