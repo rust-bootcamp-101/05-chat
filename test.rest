@@ -5,8 +5,20 @@ POST {{baseUrl}}/api/signup
 Content-Type: application/json
 
 {
+    "workspace": "test",
     "fullname": "startdusk",
     "email": "startdusk@acme.org",
+    "password": "password"
+}
+
+### signup user ben
+POST {{baseUrl}}/api/signup
+Content-Type: application/json
+
+{
+    "workspace": "test",
+    "fullname": "ben",
+    "email": "ben@acme.org",
     "password": "password"
 }
 
@@ -34,4 +46,8 @@ Content-Type: application/json
 
 ### get chat list
 GET {{baseUrl}}/api/chat
+Authorization: Bearer {{authToken}}
+
+### get user list
+GET {{baseUrl}}/api/users
 Authorization: Bearer {{authToken}}

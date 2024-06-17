@@ -7,7 +7,7 @@ mod utils;
 
 pub use config::AppConfig;
 pub use error::AppError;
-pub use models::User;
+pub use models::*;
 
 use anyhow::Context;
 use handlers::*;
@@ -15,8 +15,7 @@ use middlewares::{set_layer, verify_token};
 use sqlx::PgPool;
 use utils::{DecodingKey, EncodingKey};
 
-use core::fmt;
-use std::{ops::Deref, sync::Arc};
+use std::{fmt, ops::Deref, sync::Arc};
 
 use axum::{
     middleware::from_fn_with_state,
@@ -40,6 +39,7 @@ pub(crate) struct AppStateInner {
 pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
     let state = AppState::try_new(config).await?;
     let api = Router::new()
+        .route("/users", get(list_chat_users_handler))
         .route("/chat", get(list_chat_handler).post(create_chat_handler))
         .route(
             "/chat/:id",

@@ -25,6 +25,7 @@ pub(crate) async fn signup_handler(
     Ok((StatusCode::CREATED, body))
 }
 
+// TODO: 重复登录产生多个token如何处理？(1.采用类似session的机制，强制取消上一个token; 2.多端登录(设备唯一表示))
 pub(crate) async fn signin_handler(
     State(state): State<AppState>,
     Json(input): Json<SigninUser>,
@@ -55,7 +56,7 @@ mod tests {
     async fn signup_should_work() -> Result<()> {
         let config = AppConfig::load()?;
         let (_tdb, state) = AppState::new_for_test(config).await?;
-        let input = CreateUser::new("user1", "randomemail@acc.org", "password");
+        let input = CreateUser::new("none", "user1", "randomemail@acc.org", "password");
         let ret = signup_handler(State(state), Json(input))
             .await?
             .into_response();
@@ -70,7 +71,7 @@ mod tests {
     async fn create_duplicate_user_should_fail() -> Result<()> {
         let config = AppConfig::load()?;
         let (_tdb, state) = AppState::new_for_test(config).await?;
-        let input = CreateUser::new("user1", "randomemail@acc.org", "password");
+        let input = CreateUser::new("none", "user1", "randomemail@acc.org", "password");
         let _ = User::create(&state.pool, &input).await?;
         let ret = User::create(&state.pool, &input).await;
         match ret {
@@ -86,7 +87,7 @@ mod tests {
     async fn signup_duplicate_user_should_409() -> Result<()> {
         let config = AppConfig::load()?;
         let (_tdb, state) = AppState::new_for_test(config).await?;
-        let input = CreateUser::new("user1", "randomemail@acc.org", "password");
+        let input = CreateUser::new("none", "user1", "randomemail@acc.org", "password");
         let _ = signup_handler(State(state.clone()), Json(input.clone())).await?;
         let ret = signup_handler(State(state), Json(input))
             .await
@@ -105,7 +106,7 @@ mod tests {
         let fullname = "user1";
         let email = "randomemail@acc.org";
         let password = "password";
-        let input = CreateUser::new(fullname, email, password);
+        let input = CreateUser::new("none", fullname, email, password);
         let _ = signup_handler(State(state.clone()), Json(input)).await?;
 
         let input = SigninUser::new(email, password);
