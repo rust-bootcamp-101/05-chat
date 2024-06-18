@@ -6,8 +6,8 @@ Content-Type: application/json
 
 {
     "workspace": "test",
-    "fullname": "startdusk",
-    "email": "startdusk@acme.org",
+    "fullname": "user",
+    "email": "user@acme.org",
     "password": "password"
 }
 
@@ -45,8 +45,21 @@ Content-Type: application/json
 }
 
 ### get chat list
-GET {{baseUrl}}/api/chat
+GET {{baseUrl}}/api/chats
 Authorization: Bearer {{authToken}}
+
+### create chat
+POST {{baseUrl}}/api/chats
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "name": "acme",
+    "members": [1,2],
+    "public": false
+}
+
+
 
 ### get user list
 GET {{baseUrl}}/api/users

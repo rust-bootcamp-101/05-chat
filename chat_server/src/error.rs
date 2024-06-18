@@ -23,6 +23,12 @@ pub enum AppError {
 
     #[error("email already exists: {0}")]
     EmailAlreadyExists(String),
+
+    #[error("create chat error: {0}")]
+    CreateChatError(String),
+
+    #[error("not found: {0}")]
+    NotFound(String),
 }
 
 impl ErrorOutput {
@@ -41,6 +47,8 @@ impl IntoResponse for AppError {
             }
             Self::SqlxError(_) | Self::AnyError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::EmailAlreadyExists(_) => StatusCode::CONFLICT,
+            Self::CreateChatError(_) => StatusCode::BAD_REQUEST,
+            Self::NotFound(_) => StatusCode::NOT_FOUND,
         };
 
         (status, Json(ErrorOutput::new(self.to_string()))).into_response()
