@@ -71,8 +71,7 @@ mod tests {
     async fn create_duplicate_user_should_fail() -> Result<()> {
         let config = AppConfig::load()?;
         let (_tdb, state) = AppState::new_for_test(config).await?;
-        let input = CreateUser::new("none", "user1", "randomemail@acc.org", "password");
-        let _ = User::create(&state.pool, &input).await?;
+        let input = CreateUser::new("acme", "Startdusk Shelby", "startdusk@acme.org", "password");
         let ret = User::create(&state.pool, &input).await;
         match ret {
             Err(AppError::EmailAlreadyExists(email)) => {
@@ -87,15 +86,14 @@ mod tests {
     async fn signup_duplicate_user_should_409() -> Result<()> {
         let config = AppConfig::load()?;
         let (_tdb, state) = AppState::new_for_test(config).await?;
-        let input = CreateUser::new("none", "user1", "randomemail@acc.org", "password");
-        let _ = signup_handler(State(state.clone()), Json(input.clone())).await?;
+        let input = CreateUser::new("acme", "Startdusk Shelby", "startdusk@acme.org", "password");
         let ret = signup_handler(State(state), Json(input))
             .await
             .into_response();
         assert_eq!(ret.status(), StatusCode::CONFLICT);
         let body = ret.into_body().collect().await?.to_bytes();
         let ret: ErrorOutput = serde_json::from_slice(&body)?;
-        assert_eq!(ret.error, "email already exists: randomemail@acc.org");
+        assert_eq!(ret.error, "email already exists: startdusk@acme.org");
         Ok(())
     }
 
@@ -103,11 +101,8 @@ mod tests {
     async fn signin_should_work() -> Result<()> {
         let config = AppConfig::load()?;
         let (_tdb, state) = AppState::new_for_test(config).await?;
-        let fullname = "user1";
-        let email = "randomemail@acc.org";
+        let email = "startdusk@acme.org";
         let password = "password";
-        let input = CreateUser::new("none", fullname, email, password);
-        let _ = signup_handler(State(state.clone()), Json(input)).await?;
 
         let input = SigninUser::new(email, password);
         let ret = signin_handler(State(state), Json(input))
@@ -124,7 +119,7 @@ mod tests {
     async fn signin_with_non_exists_user_should_403() -> Result<()> {
         let config = AppConfig::load()?;
         let (_tdb, state) = AppState::new_for_test(config).await?;
-        let email = "randomemail@acc.org";
+        let email = "noneuser@acc.org";
         let password = "password";
 
         let input = SigninUser::new(email, password);

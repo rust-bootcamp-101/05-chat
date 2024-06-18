@@ -159,10 +159,10 @@ impl SigninUser {
 
 #[cfg(test)]
 mod tests {
+    use crate::test_util::get_test_pool;
+
     use super::*;
     use anyhow::Result;
-    use sqlx_db_tester::TestPg;
-    use std::path::Path;
 
     #[test]
     fn hash_password_and_verify_should_word() -> Result<()> {
@@ -175,12 +175,22 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn create_duplicate_user_should_fail() -> Result<()> {
+        let (_tdb, pool) = get_test_pool(None).await;
+        let input = CreateUser::new("acme", "Startdusk Shelby", "startdusk@acme.org", "password");
+        let ret = User::create(&pool, &input).await;
+        match ret {
+            Err(AppError::EmailAlreadyExists(email)) => {
+                assert_eq!(email, input.email)
+            }
+            _ => panic!("Expecting EmailAlreadyExists error"),
+        }
+        Ok(())
+    }
+
+    #[tokio::test]
     async fn create_and_verify_user_should_work() -> Result<()> {
-        let tdb = TestPg::new(
-            "postgres://postgres:postgres@localhost:5432".to_string(),
-            Path::new("../migrations"),
-        );
-        let pool = tdb.get_pool().await;
+        let (_tdb, pool) = get_test_pool(None).await;
         let input = CreateUser::new("none", "user1", "randomemail@acc.org", "password");
         let user = User::create(&pool, &input).await?;
         assert_eq!(user.email, input.email);

@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS workspaces (
 -- alter users table to add ws_id
 ALTER TABLE users ADD COLUMN ws_id BIGINT REFERENCES workspaces(id);
 
+-- alter chats table to add ws_id
+ALTER TABLE chats ADD COLUMN ws_id BIGINT REFERENCES workspaces(id);
+
 -- add super user 0 and workspace 0
 BEGIN;
 INSERT INTO users (id, fullname, email, password_hash)
