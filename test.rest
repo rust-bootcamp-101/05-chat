@@ -64,3 +64,28 @@ Content-Type: application/json
 ### get user list
 GET {{baseUrl}}/api/users
 Authorization: Bearer {{authToken}}
+
+### upload files
+POST {{baseUrl}}/api/upload
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; name="file"; filename="leetcode.png"
+Content-Type: application/octet-stream
+
+< leetcode.png
+--MyBoundary
+Content-Disposition: form-data; filename="hello.txt"
+Content-Type: text/plain
+
+Hello, World!
+--MyBoundary--
+
+### get files txt
+GET {{baseUrl}}/api/files/1/0a0/a9f/2a6772942557ab5355d76af442f8f65e01.txt
+Authorization: Bearer {{authToken}}
+
+### get files png
+GET {{baseUrl}}/api/files/1/1f5/80b/372d457f616afdc8d24f969966deb6dc17.png
+Authorization: Bearer {{authToken}}

@@ -13,6 +13,7 @@ use anyhow::Context;
 use handlers::*;
 use middlewares::{set_layer, verify_token};
 use sqlx::PgPool;
+use tokio::fs;
 use utils::{DecodingKey, EncodingKey};
 
 use std::{fmt, ops::Deref, sync::Arc};
@@ -39,6 +40,8 @@ pub(crate) struct AppStateInner {
 pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
     let state = AppState::try_new(config).await?;
     let api = Router::new()
+        .route("/upload", post(upload_handler))
+        .route("/files/:ws_id/*path", get(file_handler))
         .route("/users", get(list_chat_users_handler))
         .route("/chats", get(list_chat_handler).post(create_chat_handler))
         .route(
@@ -72,6 +75,9 @@ impl Deref for AppState {
 
 impl AppState {
     pub async fn try_new(config: AppConfig) -> Result<Self, AppError> {
+        fs::create_dir_all(&config.server.base_dir)
+            .await
+            .context("create base_dir failed")?;
         let dk = DecodingKey::load(&config.auth.pk).context("load pk failed")?;
         let ek = EncodingKey::load(&config.auth.sk).context("load sk failed")?;
         let pool = PgPool::connect(&config.server.db_url)

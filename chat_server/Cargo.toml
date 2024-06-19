@@ -21,10 +21,13 @@ argon2 = { workspace = true }
 jwt-simple = { version = "0.12.9", default-features = false, features = ["pure-rust"] }
 serde_json = "1.0.117"
 tower = "0.4.13"
-tower-http = { version = "0.5.2", features = ["compression-full", "cors", "trace"] }
+tower-http = { version = "0.5.2", features = ["compression-full", "fs", "cors", "trace"] }
 # uuid 使用v7版本，相比于v4乱序生成，v7生层的uuid是有序的，可以方便追踪调试
 uuid = { version = "1.8.0", features = ["v7", "serde"] }
 axum-extra = { version = "0.9.3", features = ["typed-header"] }
+sha1 = "0.10.6"
+hex = "0.4.3"
+mime_guess = "2.0.4"
 
 [dev-dependencies]
 http-body-util = "0.1.1"

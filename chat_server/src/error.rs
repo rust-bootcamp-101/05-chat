@@ -1,4 +1,4 @@
-use axum::{http::StatusCode, response::IntoResponse, Json};
+use axum::{extract::multipart, http::StatusCode, response::IntoResponse, Json};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -29,6 +29,12 @@ pub enum AppError {
 
     #[error("not found: {0}")]
     NotFound(String),
+
+    #[error("io error: {0}")]
+    IoError(#[from] std::io::Error),
+
+    #[error("multipart error: {0}")]
+    MultipartError(#[from] multipart::MultipartError),
 }
 
 impl ErrorOutput {
@@ -42,10 +48,12 @@ impl ErrorOutput {
 impl IntoResponse for AppError {
     fn into_response(self) -> axum::response::Response {
         let status = match &self {
-            Self::PasswordHashError(_) | Self::HttpHeaderError(_) => {
+            Self::PasswordHashError(_) | Self::HttpHeaderError(_) | Self::MultipartError(_) => {
                 StatusCode::UNPROCESSABLE_ENTITY
             }
-            Self::SqlxError(_) | Self::AnyError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::SqlxError(_) | Self::AnyError(_) | Self::IoError(_) => {
+                StatusCode::INTERNAL_SERVER_ERROR
+            }
             Self::EmailAlreadyExists(_) => StatusCode::CONFLICT,
             Self::CreateChatError(_) => StatusCode::BAD_REQUEST,
             Self::NotFound(_) => StatusCode::NOT_FOUND,
