@@ -1,11 +1,13 @@
 mod chat;
 mod file;
+mod message;
 mod user;
 mod workspace;
 
 pub use chat::*;
 #[allow(unused)]
 pub use file::*;
+pub use message::*;
 pub use user::*;
 
 use chrono::{DateTime, Utc};
@@ -60,6 +62,17 @@ pub enum ChatType {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatFile {
+    pub ws_id: u64,
     pub ext: String, // extract ext from filename or time type
     pub hash: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, FromRow, Serialize, Deserialize)]
+pub struct Message {
+    pub id: i64,
+    pub chat_id: i64,
+    pub sender_id: i64,
+    pub content: String,
+    pub files: Vec<String>,
+    pub created_at: DateTime<Utc>,
 }

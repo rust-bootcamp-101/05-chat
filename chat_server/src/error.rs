@@ -35,6 +35,12 @@ pub enum AppError {
 
     #[error("multipart error: {0}")]
     MultipartError(#[from] multipart::MultipartError),
+
+    #[error("create content error: {0}")]
+    CreateMessageError(String),
+
+    #[error("{0}")]
+    ChatFileError(String),
 }
 
 impl ErrorOutput {
@@ -55,7 +61,9 @@ impl IntoResponse for AppError {
                 StatusCode::INTERNAL_SERVER_ERROR
             }
             Self::EmailAlreadyExists(_) => StatusCode::CONFLICT,
-            Self::CreateChatError(_) => StatusCode::BAD_REQUEST,
+            Self::CreateChatError(_) | Self::CreateMessageError(_) | Self::ChatFileError(_) => {
+                StatusCode::BAD_REQUEST
+            }
             Self::NotFound(_) => StatusCode::NOT_FOUND,
         };
 
