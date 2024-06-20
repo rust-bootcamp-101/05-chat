@@ -10,8 +10,8 @@ pub struct CreateMessage {
     pub files: Vec<String>,
 }
 
-#[allow(unused)]
 impl AppState {
+    #[allow(unused)]
     pub async fn create_message(
         &self,
         input: CreateMessage,
