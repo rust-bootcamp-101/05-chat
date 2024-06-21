@@ -17,7 +17,7 @@ impl ChatFile {
     }
 
     pub fn url(&self) -> String {
-        format!("/files/{}/{}", self.ws_id, self.hash_to_path())
+        format!("/files/{}", self.hash_to_path())
     }
 
     pub fn path(&self, base_dir: &Path) -> PathBuf {
@@ -38,15 +38,19 @@ impl FromStr for ChatFile {
     // convert /files/1/0a0/a9f/2a6772942557ab5355d76af442f8f65e01.txt to ChatFile
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let Some(s) = s.strip_prefix("/files/") else {
-            return Err(AppError::ChatFileError("invalid file path".to_string()));
+            return Err(AppError::ChatFileError(format!(
+                "invalid chat file path: {s}"
+            )));
         };
         let parts: Vec<&str> = s.split('/').collect();
         if parts.len() != 4 {
-            return Err(AppError::ChatFileError("invalid file path".to_string()));
+            return Err(AppError::ChatFileError(format!(
+                "invalid chat file path: {s}"
+            )));
         }
-        let Ok(ws_id) = parts[1].parse::<u64>() else {
+        let Ok(ws_id) = parts[0].parse::<u64>() else {
             return Err(AppError::ChatFileError(
-                format!("invalid workspace id: {}", parts[1]).to_string(),
+                format!("invalid workspace id: {}", parts[0]).to_string(),
             ));
         };
         let Some((part3, ext)) = parts[3].split_once('.') else {

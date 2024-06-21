@@ -32,7 +32,7 @@ Content-Type: application/json
     "password": "password"
 }
 
-###
+### auth token
 @authToken = {{signin.response.body.$.token}}
 
 ### signin user(invalid)
@@ -88,4 +88,18 @@ Authorization: Bearer {{authToken}}
 
 ### get files png
 GET {{baseUrl}}/api/files/1/1f5/80b/372d457f616afdc8d24f969966deb6dc17.png
+Authorization: Bearer {{authToken}}
+
+### send a message
+POST {{baseUrl}}/api/chats/1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "content": "Hello, World!",
+    "files": []
+}
+
+### get messages
+GET {{baseUrl}}/api/chats/1/messages?limit=6
 Authorization: Bearer {{authToken}}
