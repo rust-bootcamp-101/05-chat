@@ -29,9 +29,11 @@ pub(crate) async fn sse_handler(
         tx.subscribe()
     } else {
         let (tx, rx) = broadcast::channel(CHANNEL_CAPACITY);
-        users.insert(user_id, tx);
+        state.users.insert(user_id, tx);
         rx
     };
+
+    info!("User {} subscribe", user_id);
 
     let stream = BroadcastStream::new(rx).filter_map(|v| v.ok()).map(|v| {
         let name = match v.as_ref() {

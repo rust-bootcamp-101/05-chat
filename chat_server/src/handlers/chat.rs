@@ -21,6 +21,13 @@ pub(crate) async fn create_chat_handler(
     State(state): State<AppState>,
     Json(input): Json<CreateChat>,
 ) -> Result<impl IntoResponse, AppError> {
+    // check user should in members
+    if !input.members.contains(&user.id) {
+        return Err(AppError::CreateChatError(format!(
+            "user {} not in chat members {:?}",
+            user.id, input.members
+        )));
+    }
     let chat = state.create_chat(input, user.ws_id as _).await?;
     Ok((StatusCode::CREATED, Json(chat)))
 }

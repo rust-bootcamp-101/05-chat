@@ -5,9 +5,9 @@ POST {{baseUrl}}/api/signup
 Content-Type: application/json
 
 {
-    "workspace": "test",
-    "fullname": "user",
-    "email": "user@acme.org",
+    "workspace": "acme",
+    "fullname": "startdusk",
+    "email": "startdusk@acme.org",
     "password": "password"
 }
 
@@ -16,7 +16,7 @@ POST {{baseUrl}}/api/signup
 Content-Type: application/json
 
 {
-    "workspace": "test",
+    "workspace": "acme",
     "fullname": "ben",
     "email": "ben@acme.org",
     "password": "password"

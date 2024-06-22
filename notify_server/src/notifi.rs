@@ -49,6 +49,7 @@ pub async fn setup_pg_listener(state: AppState) -> Result<()> {
             let notification = Notification::load(notif.channel(), notif.payload())?;
             info!("Received notification: {:?}", notification);
             let users = &state.users;
+
             for user_id in notification.user_ids {
                 if let Some(tx) = users.get(&user_id) {
                     if let Err(e) = tx.send(notification.event.clone()) {
