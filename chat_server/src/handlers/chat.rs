@@ -5,7 +5,8 @@ use axum::{
     Extension, Json,
 };
 
-use crate::{AppError, AppState, CreateChat, User};
+use crate::{AppError, AppState, CreateChat};
+use chat_core::User;
 
 pub(crate) async fn list_chat_handler(
     Extension(user): Extension<User>,

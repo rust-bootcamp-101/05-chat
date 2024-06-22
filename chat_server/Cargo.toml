@@ -6,6 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+chat-core = { workspace = true }
+
 anyhow = { workspace = true }
 axum = { workspace = true }
 serde = { workspace = true }
@@ -18,13 +20,11 @@ tracing-subscriber = { workspace = true }
 chrono = { workspace = true }
 argon2 = { workspace = true }
 # jwt-simple 设计比jwtwebtoken更好(不易出错) 把default-features去掉, 因为默认里面boring是Cpp写的, 编译很慢
-jwt-simple = { version = "0.12.9", default-features = false, features = ["pure-rust"] }
-serde_json = "1.0.117"
-tower = "0.4.13"
-tower-http = { version = "0.5.2", features = ["compression-full", "fs", "cors", "trace"] }
-# uuid 使用v7版本，相比于v4乱序生成，v7生层的uuid是有序的，可以方便追踪调试
-uuid = { version = "1.8.0", features = ["v7", "serde"] }
-axum-extra = { version = "0.9.3", features = ["typed-header"] }
+jwt-simple = { workspace = true }
+serde_json = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+axum-extra = { workspace = true }
 sha1 = "0.10.6"
 hex = "0.4.3"
 mime_guess = "2.0.4"

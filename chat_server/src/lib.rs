@@ -3,18 +3,18 @@ mod error;
 mod handlers;
 mod middlewares;
 mod models;
-mod utils;
 
 pub use config::AppConfig;
 pub use error::AppError;
 pub use models::*;
 
 use anyhow::Context;
+use chat_core::middlewares::{set_layer, verify_token, TokenVerify};
+use chat_core::{DecodingKey, EncodingKey, User};
 use handlers::*;
-use middlewares::{set_layer, verify_chat, verify_token};
+use middlewares::verify_chat;
 use sqlx::PgPool;
 use tokio::fs;
-use utils::{DecodingKey, EncodingKey};
 
 use std::{fmt, ops::Deref, sync::Arc};
 
@@ -56,7 +56,7 @@ pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
         .route("/files/:ws_id/*path", get(file_handler))
         .route("/users", get(list_chat_users_handler))
         .nest("/chats", chats)
-        .layer(from_fn_with_state(state.clone(), verify_token))
+        .layer(from_fn_with_state(state.clone(), verify_token::<AppState>))
         // routes doesn't need token verification
         .route("/signin", post(signin_handler))
         .route("/signup", post(signup_handler));
@@ -95,6 +95,14 @@ impl AppState {
                 pool,
             }),
         })
+    }
+}
+
+impl TokenVerify for AppState {
+    type Error = AppError;
+
+    fn verify(&self, token: &str) -> Result<User, Self::Error> {
+        Ok(self.dk.verify(token)?)
     }
 }
 

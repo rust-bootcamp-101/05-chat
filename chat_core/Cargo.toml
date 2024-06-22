@@ -1,0 +1,21 @@
+[package]
+name = "chat-core"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = { workspace = true }
+serde = { workspace = true }
+sqlx = { workspace = true }
+jwt-simple = { workspace = true }
+anyhow = { workspace = true}
+tower = { workspace = true }
+tower-http = { workspace = true }
+axum = { workspace = true }
+axum-extra = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+# uuid 使用v7版本，相比于v4乱序生成，v7生层的uuid是有序的，可以方便追踪调试
+uuid = { version = "1.8.0", features = ["v7", "serde"] }

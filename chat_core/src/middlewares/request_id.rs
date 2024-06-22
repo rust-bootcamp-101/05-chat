@@ -4,7 +4,7 @@ use tracing::warn;
 use super::REQUEST_ID_HEADER;
 
 /// 中间件，在request和response添加request id
-pub(crate) async fn set_request_id(mut req: Request, next: Next) -> Response {
+pub async fn set_request_id(mut req: Request, next: Next) -> Response {
     // if x-request-id exists, do nothing, otherwise generate a new one
     let id = match req.headers().get(REQUEST_ID_HEADER) {
         Some(v) => Some(v.clone()),
