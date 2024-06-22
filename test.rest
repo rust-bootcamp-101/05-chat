@@ -101,5 +101,5 @@ Authorization: Bearer {{authToken}}
 }
 
 ### get messages
-GET {{baseUrl}}/api/chats/1/messages?limit=6
+GET {{baseUrl}}/api/chats/1/messages?limit=6&last_id=1
 Authorization: Bearer {{authToken}}
