@@ -25,29 +25,29 @@ use axum::{
 };
 
 #[derive(Clone)]
-pub(crate) struct AppState {
+pub struct AppState {
     inner: Arc<AppStateInner>,
 }
 
-#[allow(unused)]
-pub(crate) struct AppStateInner {
+pub struct AppStateInner {
     pub(crate) config: AppConfig,
     pub(crate) ek: EncodingKey,
     pub(crate) dk: DecodingKey,
     pub(crate) pool: PgPool,
 }
 
-pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
-    let state = AppState::try_new(config).await?;
+pub async fn get_router(state: AppState) -> Result<Router, AppError> {
     let chats = Router::new()
         .route(
             "/:id",
             get(get_chat_handler)
                 .patch(update_chat_handler)
-                .delete(delete_chat_handler)
-                .post(send_message_handler),
+                .delete(delete_chat_handler),
         )
-        .route("/:id/messages", get(list_message_handler))
+        .route(
+            "/:id/messages",
+            get(list_message_handler).post(send_message_handler),
+        )
         .layer(from_fn_with_state(state.clone(), verify_chat))
         .route("/", get(list_chat_handler).post(create_chat_handler));
 
@@ -114,7 +114,7 @@ impl fmt::Debug for AppStateInner {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "test-util")]
 mod test_util {
     use super::*;
     use sqlx::Executor;

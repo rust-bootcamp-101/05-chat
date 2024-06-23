@@ -70,13 +70,21 @@ impl FromStr for ChatFile {
 
 #[cfg(test)]
 mod tests {
+    use anyhow::Result;
+
     use super::*;
 
     #[test]
-    fn chat_file_new_should_work() {
+    fn chat_file_new_should_work() -> Result<()> {
         let file = ChatFile::new(1, "test.txt", b"hello");
         assert_eq!(file.ws_id, 1);
         assert_eq!(file.ext, "txt");
         assert_eq!(file.hash, "aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d");
+
+        let file: ChatFile = "/files/1/b47/459/db6c6288890f77fd20d105e2240fe0fd5a.toml".parse()?;
+        assert_eq!(file.ws_id, 1);
+        assert_eq!(file.ext, "toml");
+        assert_eq!(file.hash, "b47459db6c6288890f77fd20d105e2240fe0fd5a");
+        Ok(())
     }
 }

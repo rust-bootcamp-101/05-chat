@@ -91,7 +91,7 @@ GET {{baseUrl}}/api/files/1/1f5/80b/372d457f616afdc8d24f969966deb6dc17.png
 Authorization: Bearer {{authToken}}
 
 ### send a message
-POST {{baseUrl}}/api/chats/1
+POST {{baseUrl}}/api/chats/1/messages
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 

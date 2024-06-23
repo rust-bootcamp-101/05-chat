@@ -19,7 +19,6 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 chrono = { workspace = true }
 argon2 = { workspace = true }
-# jwt-simple 设计比jwtwebtoken更好(不易出错) 把default-features去掉, 因为默认里面boring是Cpp写的, 编译很慢
 jwt-simple = { workspace = true }
 serde_json = { workspace = true }
 tower = { workspace = true }
@@ -29,7 +28,19 @@ sha1 = "0.10.6"
 hex = "0.4.3"
 mime_guess = "2.0.4"
 
+http-body-util = { version = "0.1.1", optional = true }
+sqlx-db-tester = { version = "0.4.2", optional = true }
+
+[features]
+default = []
+test-util = [
+    "http-body-util",
+    "sqlx-db-tester"
+]
+
 [dev-dependencies]
-http-body-util = "0.1.1"
 # sqlx-db-tester = { workspace = true } workspace 不支持 dev-dependencies，所以只能单独引入到crate中
-sqlx-db-tester = "0.4.2"
+# http-body-util = "0.1.1"
+# sqlx-db-tester = "0.4.2" 由于被设计为 features test-util 使用，所以要加上 optional = true, 并且要加入到 dependencies (dev-dependencies不能被外部的crate使用)
+
+chat-server = { workspace = true, features = ["test-util"] } # 给自己使用 test-util

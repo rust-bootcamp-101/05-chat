@@ -38,12 +38,14 @@ pub struct AppStateInner {
     dk: DecodingKey,
 }
 
-pub fn get_router(state: AppState) -> Router {
-    Router::new()
+pub async fn get_router(state: AppState) -> Result<Router> {
+    setup_pg_listener(state.clone()).await?;
+    let router = Router::new()
         .route("/events", get(sse_handler))
         .layer(from_fn_with_state(state.clone(), verify_token::<AppState>))
         .route("/", get(index_handler))
-        .with_state(state)
+        .with_state(state);
+    Ok(router)
 }
 
 async fn index_handler() -> impl IntoResponse {
