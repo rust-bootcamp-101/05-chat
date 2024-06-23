@@ -3,6 +3,7 @@ mod error;
 mod handlers;
 mod middlewares;
 mod models;
+mod openapi;
 
 pub use config::AppConfig;
 pub use error::AppError;
@@ -13,6 +14,7 @@ use chat_core::middlewares::{set_layer, verify_token, TokenVerify};
 use chat_core::{DecodingKey, EncodingKey, User};
 use handlers::*;
 use middlewares::verify_chat;
+use openapi::OpenApiRouter;
 use sqlx::PgPool;
 use tokio::fs;
 
@@ -62,6 +64,7 @@ pub async fn get_router(state: AppState) -> Result<Router, AppError> {
         .route("/signup", post(signup_handler));
 
     let app = Router::new()
+        .openapi()
         .route("/", get(index_handler))
         .nest("/api", api)
         .with_state(state);

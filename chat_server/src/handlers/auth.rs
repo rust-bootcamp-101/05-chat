@@ -1,5 +1,6 @@
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use crate::{
     error::ErrorOutput,
@@ -7,11 +8,18 @@ use crate::{
     AppError, AppState,
 };
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, ToSchema, Serialize, Deserialize)]
 pub struct AuthOutput {
     token: String,
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/signup",
+    responses(
+        (status = 201, description = "User create", body = AuthOutput)
+    )
+)]
 pub(crate) async fn signup_handler(
     State(state): State<AppState>,
     Json(input): Json<CreateUser>,
@@ -26,6 +34,13 @@ pub(crate) async fn signup_handler(
 }
 
 // TODO: 重复登录产生多个token如何处理？(1.采用类似session的机制，强制取消上一个token; 2.多端登录(设备唯一表示))
+#[utoipa::path(
+    post,
+    path = "/api/signin",
+    responses(
+        (status = 200, description = "User signin", body = AuthOutput)
+    )
+)]
 pub(crate) async fn signin_handler(
     State(state): State<AppState>,
     Json(input): Json<SigninUser>,
