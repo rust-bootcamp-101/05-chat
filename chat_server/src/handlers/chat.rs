@@ -5,7 +5,7 @@ use axum::{
     Extension, Json,
 };
 
-use crate::{AppError, AppState, CreateChat};
+use crate::{AppError, AppState, CreateChat, UpdateChat};
 use chat_core::User;
 
 #[utoipa::path(
@@ -77,10 +77,39 @@ pub(crate) async fn get_chat_handler(
     }
 }
 
-pub(crate) async fn update_chat_handler() -> impl IntoResponse {
-    "update chat"
+// TODO: chats表需要添加一个owner(外键 user id)字段
+// 检查是否能改名（owner可以改？）
+// 可以删除members?
+// owner退出members了怎么办
+// members只剩一个人怎么办
+pub(crate) async fn update_chat_handler(
+    Extension(user): Extension<User>,
+    State(state): State<AppState>,
+    Path(id): Path<u64>,
+    Json(input): Json<UpdateChat>,
+) -> Result<impl IntoResponse, AppError> {
+    let chat = state.get_chat_by_id(id).await?;
+    let Some(mut chat) = chat else {
+        return Err(AppError::NotFound(format!("chat id {id}")));
+    };
+
+    if let Some(name) = input.name {
+        chat.name = Some(name)
+    }
+
+    if let Some(members) = input.members {
+        if !members.contains(&user.id) {
+            // 如果更新人不在members里面了?
+        }
+        chat.members = members
+    }
+
+    let chat = state.update_chat(id, chat).await?;
+
+    Ok((StatusCode::OK, Json(chat)))
 }
 
+// TODO: 下面连个接口需要存在设计上的缺陷，需要确定谁能删除
 pub(crate) async fn delete_chat_handler() -> impl IntoResponse {
     "delete chat"
 }

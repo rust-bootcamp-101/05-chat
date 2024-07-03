@@ -10,7 +10,7 @@
         <h1>Notify Server SSE Page</h1>
     </div>
     <script lang="javascript">
-        const accessToken = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTkwNTU0NjEsImV4cCI6MTcxOTY2MDI2MSwibmJmIjoxNzE5MDU1NDYxLCJpc3MiOiJjaGF0X3NlcnZlciIsImF1ZCI6ImNoYXRfd2ViIiwiaWQiOjEsIndzX2lkIjoxLCJmdWxsbmFtZSI6InN0YXJ0ZHVzayIsImVtYWlsIjoic3RhcnRkdXNrQGFjbWUub3JnIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDYtMjJUMTE6MjA6NTEuMjk5MTU3WiJ9.gMQgjrzeyfREeM-qDhwRGz8Q-WmafW4ACn3k-sRi1Ud1ya4PrjRcDcxCR6vMox7jGOMVdxXJIPTHiE6E_oDdCA'
+        const accessToken = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTk5MzE5NjgsImV4cCI6MTcyMDUzNjc2OCwibmJmIjoxNzE5OTMxOTY4LCJpc3MiOiJjaGF0X3NlcnZlciIsImF1ZCI6ImNoYXRfd2ViIiwiaWQiOjEsIndzX2lkIjowLCJmdWxsbmFtZSI6InN0YXJ0ZHVzayIsImVtYWlsIjoic3RhcnRkdXNrQGFjbWUub3JnIiwiY3JlYXRlZF9hdCI6IjIwMjQtMDYtMjNUMDY6MDU6MDQuMjAxMTE0WiJ9.OrhJVocWMwnElc8UrfIqp5L10Xj6EvUUQ5FxVUBiNhez5boEhsfVAa3OZ6z0q_PsILgnP6V-L2qGCndzSr7uBA'
         const source = new EventSource(`/events?access_token=${accessToken}`)
         source.onmessage = (event) => {
             console.log("Got: ", event.data)

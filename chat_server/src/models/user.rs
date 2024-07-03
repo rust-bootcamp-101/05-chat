@@ -107,9 +107,7 @@ impl AppState {
         }
         Ok(Some(user))
     }
-}
 
-impl AppState {
     pub async fn fetch_chat_user_by_ids(&self, ids: &[i64]) -> Result<Vec<ChatUser>, AppError> {
         let users = sqlx::query_as(
             r#"

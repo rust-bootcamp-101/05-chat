@@ -11,6 +11,13 @@ pub struct CreateChat {
     pub public: bool,
 }
 
+#[derive(Debug, ToSchema, Clone, Serialize, Deserialize)]
+pub struct UpdateChat {
+    pub name: Option<String>,
+    pub members: Option<Vec<i64>>,
+    pub public: Option<bool>,
+}
+
 impl AppState {
     pub async fn create_chat(&self, input: CreateChat, ws_id: u64) -> Result<Chat, AppError> {
         let len = input.members.len();
@@ -102,6 +109,10 @@ impl AppState {
         .fetch_optional(&self.pool)
         .await?;
         Ok(is_member.is_some())
+    }
+
+    pub async fn update_chat(&self, _chat_id: u64, _update: Chat) -> Result<Chat, AppError> {
+        todo!()
     }
 }
 
