@@ -119,7 +119,7 @@ impl ChatServer {
 
         let res = self
             .client
-            .post(&format!("http://{}/api/signin", self.addr))
+            .post(format!("http://{}/api/signin", self.addr))
             .header("Content-Type", "application/json")
             .body(body)
             .send()
@@ -139,7 +139,7 @@ impl ChatServer {
 
         let res = self
             .client
-            .post(&format!("http://{}/api/chats", self.addr))
+            .post(format!("http://{}/api/chats", self.addr))
             .header("Authorization", format!("Bearer {}", self.token))
             .header("Content-Type", "application/json")
             .body(body)
@@ -163,7 +163,7 @@ impl ChatServer {
 
         let res = self
             .client
-            .post(&format!("http://{}/api/upload", self.addr))
+            .post(format!("http://{}/api/upload", self.addr))
             .header("Authorization", format!("Bearer {}", self.token))
             .multipart(form)
             .send()
@@ -178,7 +178,7 @@ impl ChatServer {
 
         let res = self
             .client
-            .post(&format!("http://{}/api/chats/{}", self.addr, chat_id))
+            .post(format!("http://{}/api/chats/{}", self.addr, chat_id))
             .header("Authorization", format!("Bearer {}", self.token))
             .header("Content-Type", "application/json")
             .body(body)
