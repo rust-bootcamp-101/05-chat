@@ -1,7 +1,7 @@
 ### Cargo deny 查询错误日志
 由于默认输入的日志太多了，需要过滤(否则terminal看不到错误的位置)
 ```bash
-cargo deny --log-level error
+cargo deny --log-level error check
 ```
 
 ### Cargo deny 检测到错误，如何处理

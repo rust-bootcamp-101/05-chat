@@ -178,10 +178,7 @@ impl ChatServer {
 
         let res = self
             .client
-            .post(&format!(
-                "http://{}/api/chats/{}/messages",
-                self.addr, chat_id
-            ))
+            .post(&format!("http://{}/api/chats/{}", self.addr, chat_id))
             .header("Authorization", format!("Bearer {}", self.token))
             .header("Content-Type", "application/json")
             .body(body)

@@ -5,6 +5,7 @@ mod middlewares;
 mod models;
 mod openapi;
 
+use axum::http::Method;
 pub use config::AppConfig;
 pub use error::AppError;
 pub use models::*;
@@ -17,6 +18,7 @@ use middlewares::verify_chat;
 use openapi::OpenApiRouter;
 use sqlx::PgPool;
 use tokio::fs;
+use tower_http::cors::{self, CorsLayer};
 
 use std::{fmt, ops::Deref, sync::Arc};
 
@@ -44,14 +46,23 @@ pub async fn get_router(state: AppState) -> Result<Router, AppError> {
             "/:id",
             get(get_chat_handler)
                 .patch(update_chat_handler)
-                .delete(delete_chat_handler),
+                .delete(delete_chat_handler)
+                .post(send_message_handler),
         )
-        .route(
-            "/:id/messages",
-            get(list_message_handler).post(send_message_handler),
-        )
+        .route("/:id/messages", get(list_message_handler))
         .layer(from_fn_with_state(state.clone(), verify_chat))
         .route("/", get(list_chat_handler).post(create_chat_handler));
+
+    let cors = CorsLayer::new()
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PATCH,
+            Method::PUT,
+            Method::DELETE,
+        ])
+        .allow_headers(cors::Any)
+        .allow_origin(cors::Any);
 
     let api = Router::new()
         .route("/upload", post(upload_handler))
@@ -61,7 +72,8 @@ pub async fn get_router(state: AppState) -> Result<Router, AppError> {
         .layer(from_fn_with_state(state.clone(), verify_token::<AppState>))
         // routes doesn't need token verification
         .route("/signin", post(signin_handler))
-        .route("/signup", post(signup_handler));
+        .route("/signup", post(signup_handler))
+        .layer(cors);
 
     let app = Router::new()
         .openapi()

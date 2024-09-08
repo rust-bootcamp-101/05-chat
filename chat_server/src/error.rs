@@ -42,6 +42,9 @@ pub enum AppError {
 
     #[error("{0}")]
     ChatFileError(String),
+
+    #[error("{0}")]
+    UnAuthorization(String),
 }
 
 impl ErrorOutput {
@@ -66,6 +69,7 @@ impl IntoResponse for AppError {
                 StatusCode::BAD_REQUEST
             }
             Self::NotFound(_) => StatusCode::NOT_FOUND,
+            Self::UnAuthorization(_) => StatusCode::UNAUTHORIZED,
         };
 
         (status, Json(ErrorOutput::new(self.to_string()))).into_response()

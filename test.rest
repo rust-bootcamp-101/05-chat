@@ -22,6 +22,28 @@ Content-Type: application/json
     "password": "password"
 }
 
+### signup user john
+POST {{baseUrl}}/api/signup
+Content-Type: application/json
+
+{
+    "workspace": "acme",
+    "fullname": "john",
+    "email": "john@acme.org",
+    "password": "password"
+}
+
+### signup user panda
+POST {{baseUrl}}/api/signup
+Content-Type: application/json
+
+{
+    "workspace": "acme",
+    "fullname": "panda",
+    "email": "panda@acme.org",
+    "password": "password"
+}
+
 ### signin user(valid)
 # @name signin
 POST {{baseUrl}}/api/signin
@@ -32,8 +54,21 @@ Content-Type: application/json
     "password": "password"
 }
 
-### auth token
+### auth token with startdusk
 @authToken = {{signin.response.body.$.token}}
+
+### signin user(valid)
+# @name signin1
+POST {{baseUrl}}/api/signin
+Content-Type: application/json
+
+{
+    "email": "ben@acme.org",
+    "password": "password"
+}
+
+### auth token with ben
+@authToken1 = {{signin1.response.body.$.token}}
 
 ### signin user(invalid)
 POST {{baseUrl}}/api/signin
@@ -44,21 +79,52 @@ Content-Type: application/json
     "password": "password"
 }
 
-### get chat list
-GET {{baseUrl}}/api/chats
-Authorization: Bearer {{authToken}}
-
-### create chat
+### create chat with startdusk
 POST {{baseUrl}}/api/chats
-Authorization: Bearer {{authToken}}
 Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 {
-    "name": "acme",
-    "members": [1,2],
+    "name": "project X",
+    "members": [1, 2],
     "public": false
 }
 
+### create direct chat with startdusk
+POST {{baseUrl}}/api/chats
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "members": [1, 2],
+    "public": false
+}
+
+### create chats without startdusk
+POST {{baseUrl}}/api/chats
+Content-Type: application/json
+Authorization: Bearer {{authToken1}}
+
+{
+    "name": "project Y",
+    "members": [2, 3],
+    "public": false
+}
+
+### create direct chat without startdusk
+POST {{baseUrl}}/api/chats
+Content-Type: application/json
+Authorization: Bearer {{authToken1}}
+
+{
+    "members": [2, 3],
+    "public": false
+}
+
+
+### get chat list
+GET {{baseUrl}}/api/chats
+Authorization: Bearer {{authToken}}
 
 
 ### get user list
@@ -101,5 +167,25 @@ Authorization: Bearer {{authToken}}
 }
 
 ### get messages
-GET {{baseUrl}}/api/chats/1/messages?limit=6&last_id=1
+GET {{baseUrl}}/api/chats/1/messages?limit=6&last_id=10
 Authorization: Bearer {{authToken}}
+
+### use cloudflare AI
+@cfAccount = xxx
+@cfToken = xxx
+
+POST https://api.cloudflare.com/client/v4/accounts/{{cfAccount}}/ai/run/@cf/meta/llama-3-8b-instruct
+Authorization: Bearer {{cfToken}}
+
+{
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a friendly assistant that answers questions based on your knowledge. Your reply will be limited to 100 words. reply with simplified Chinese, unless the question asks for a specific language."
+        },
+        {
+            "role": "user",
+            "content": "中国上最长的河流是哪条？"
+        }
+    ]
+}
