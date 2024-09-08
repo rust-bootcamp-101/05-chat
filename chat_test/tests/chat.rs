@@ -44,8 +44,7 @@ impl NotifyServer {
     pub async fn new(db_url: &str, token: &str) -> Result<Self> {
         let mut config = notify_server::AppConfig::load()?;
         config.server.db_url = db_url.to_string();
-        let state = notify_server::AppState::new(config);
-        let app = notify_server::get_router(state).await?;
+        let app = notify_server::get_router(config).await?;
         let listener = TcpListener::bind(WILD_ADDR).await?;
         let addr = listener.local_addr()?;
         tokio::spawn(async move {
