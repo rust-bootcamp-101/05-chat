@@ -9,19 +9,17 @@ use sqlx::FromRow;
 use utoipa::ToSchema;
 
 #[derive(Debug, ToSchema, Clone, PartialEq, Eq, FromRow, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct User {
     pub id: i64,
-    #[serde(alias = "wsId")]
     pub ws_id: i64, // workspace_id
     #[sqlx(default)]
-    #[serde(alias = "wsName")]
     pub ws_name: String,
     pub fullname: String,
     pub email: String,
     #[sqlx(default)]
     #[serde(skip)]
     pub password_hash: Option<String>,
-    #[serde(alias = "createdAt")]
     pub created_at: DateTime<Utc>,
 }
 
